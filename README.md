@@ -71,6 +71,18 @@ El sistema permite:
 - Establecer relaciones de similitud
 - Consultar recomendaciones desde un endpoint
 
+  
+ ## ✅ ejecusion 
+ -ejecutar node api.js eso ejecutara el servidor 
+- desplegara lo siguente en la terminal:
+ -🚀 pagina  para ver recomendaciones
+-✅ Servidor corriendo en http://localhost:3000
+-🚀 pagina para ingresar usuario y producto y registrar compra
+-✅ Servidor corriendo en http://localhost:3000/ingresar.html
+-🚀 pagina para el usuario
+-✅ Servidor corriendo en http://localhost:3000/usuario.html
+
+
 Todo esto queda integrado y visualizable gracias a **Neo4j Browser** y el frontend básico.
 
 ---
