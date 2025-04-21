@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MV Electronics - Panel de Administración</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .delete-section {
+            background-color: #ffefef;
+        }
+
+        .delete-section button {
+            background-color: #e74c3c;
+        }
+
+        .delete-section button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛍️ MV Electronics</h1>
+        <p>Panel de Administración de Productos</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>👤 Crear Usuario</h2>
+            <input type="text" id="userId" placeholder="ID de usuario (u1)" />
+            <button onclick="crearUsuario()">Crear Usuario</button>
+        </div>
+
+        <div class="section">
+            <h2>📱 Crear Producto</h2>
+            <input type="text" id="productId" placeholder="ID de producto (p1)" />
+            <input type="text" id="productName" placeholder="Nombre del producto" />
+            <button onclick="crearProducto()">Crear Producto</button>
+        </div>
+
+        <div class="section">
+            <h2>🛒 Registrar Compra</h2>
+            <input type="text" id="compraUserId" placeholder="ID del usuario" />
+            <input type="text" id="compraProductId" placeholder="ID del producto" />
+            <button onclick="registrarCompra()">Registrar Compra</button>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Productos Similares</h2>
+            <input type="text" id="p1" placeholder="Producto 1" />
+            <input type="text" id="p2" placeholder="Producto 2" />
+            <input type="number" id="score" step="0.1" min="0" max="1" placeholder="Score (0.0 - 1.0)" />
+            <button onclick="marcarSimilares()">Conectar Productos</button>
+        </div>
+
+        <div class="section delete-section">
+            <h2>🗑️ Eliminar Usuario</h2>
+            <input type="text" id="eliminarUsuarioId" placeholder="ID del usuario a eliminar" />
+            <button onclick="eliminarUsuario()">Eliminar Usuario</button>
+        </div>
+
+        <div class="section delete-section">
+            <h2>🗑️ Eliminar Producto</h2>
+            <input type="text" id="eliminarProductoId" placeholder="ID del producto a eliminar" />
+            <button onclick="eliminarProducto()">Eliminar Producto</button>
+        </div>
+
+        <div class="section delete-section">
+            <h2>🗑️ Eliminar Compra</h2>
+            <input type="text" id="eliminarCompraUserId" placeholder="ID del usuario" />
+            <input type="text" id="eliminarCompraProductId" placeholder="ID del producto" />
+            <button onclick="eliminarCompra()">Eliminar Compra</button>
+        </div>
+    </div>
+
+    <script>
+        async function crearUsuario() {
+            const id = document.getElementById('userId').value;
+            await fetch('/usuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            alert('Usuario creado');
+        }
+
+        async function crearProducto() {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('productName').value;
+            await fetch('/producto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, name })
+            });
+            alert('Producto creado');
+        }
+
+        async function registrarCompra() {
+            const userId = document.getElementById('compraUserId').value;
+            const productId = document.getElementById('compraProductId').value;
+            await fetch('/comprar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, productId })
+            });
+            alert('Compra registrada');
+        }
+
+        async function marcarSimilares() {
+            const p1 = document.getElementById('p1').value;
+            const p2 = document.getElementById('p2').value;
+            const score = parseFloat(document.getElementById('score').value);
+            await fetch('/similares', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ p1, p2, score })
+            });
+            alert('Conexión creada');
+        }
+
+        async function eliminarUsuario() {
+            const userId = document.getElementById('eliminarUsuarioId').value;
+            await fetch(`/usuario/${userId}`, { method: 'DELETE' });
+            alert('Usuario eliminado');
+        }
+
+        async function eliminarProducto() {
+            const productId = document.getElementById('eliminarProductoId').value;
+            await fetch(`/producto/${productId}`, { method: 'DELETE' });
+            alert('Producto eliminado');
+        }
+
+        async function eliminarCompra() {
+            const userId = document.getElementById('eliminarCompraUserId').value;
+            const productId = document.getElementById('eliminarCompraProductId').value;
+            
+            if (!userId || !productId) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+
+            try {
+                const response = await fetch('/eliminar-compra', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, productId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al eliminar la compra');
+                }
+
+                alert('Compra eliminada exitosamente');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MV Electronics - Recomendaciones</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-bar {
+            background-color: #2c3e50;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-bar a:hover {
+            background-color: #3498db;
+        }
+
+        .back-to-store {
+            background-color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 25%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #results {
+            list-style: none;
+            padding: 0;
+        }
+
+        #results li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        #results li:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛍️ MV Electronics</h1>
+        <p>Sistema de Recomendaciones</p>
+    </div>
+
+    <!-- <div class="nav-bar">
+        <a href="tienda.html" class="back-to-store">🏪 Volver a la Tienda</a>
+    </div> -->
+
+    <div class="search-container">
+        <h2>📱 Buscar Recomendaciones</h2>
+        <input type="text" id="userId" placeholder="Ingrese ID de usuario (Ej: u1)" />
+        <button onclick="getRecommendations()">Buscar</button>
+    </div>
+
+    <ul id="results"></ul>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000';
+
+        async function getRecommendations() {
+            try {
+                const userId = document.getElementById('userId').value;
+                const res = await fetch(`${BASE_URL}/recommend/${userId}`);
+                
+                if (!res.ok) {
+                    throw new Error('Error al obtener recomendaciones');
+                }
+
+                const data = await res.json();
+                const list = document.getElementById('results');
+                list.innerHTML = '';
+                
+                if (data.recommendations && data.recommendations.length > 0) {
+                    data.recommendations.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = `${p.name} (ID: ${p.id})`;
+                        list.appendChild(li);
+                    });
+                } else {
+                    list.innerHTML = '<li>No se encontraron recomendaciones</li>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const list = document.getElementById('results');
+                list.innerHTML = '<li>Error al cargar las recomendaciones</li>';
+            }
+        }
+    </script>
+</body>
+</html>
